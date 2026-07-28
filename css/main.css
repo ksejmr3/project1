@@ -192,6 +192,11 @@ button {
     transform: translate(-50%, -50%);
 }
 
+#hero .control.is-paused .control-icon {
+    filter: brightness(0) invert(1);
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
 #hero .progress {
     position: absolute;
     top: 50%;
@@ -253,6 +258,7 @@ button {
     width: 100%;
     height: 614px;
     overflow: visible;
+    clip-path: inset(0 -100vw 0 0);
 }
 
 .main .con1 .promotion-list {
@@ -341,6 +347,11 @@ button {
     width: 24px;
     height: 24px;
     object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.main .con1 .card-actions button[aria-pressed='true'] img {
+    transform: scale(1.08);
 }
 
 .main .con1 .card-stats {
@@ -522,7 +533,7 @@ button {
     left: 0;
     width: 1400px;
     height: 269px;
-    overflow: visible;
+    overflow: hidden;
 }
 
 .main .con2 .live-list {
@@ -589,7 +600,7 @@ button {
 
 .main .con2 .live-slide {
     top: 126px;
-    z-index: 10;
+    z-index: 30;
 }
 
 .main .con2 .live-slide.prev {
@@ -603,7 +614,7 @@ button {
 .main .con2 .main-tag {
     top: 0;
     right: -43px;
-    z-index: 10;
+    z-index: 100;
 }
 
 .main .con2 .live-heading,
@@ -612,12 +623,13 @@ button {
 }
 
 .main .con3 {
-    background: var(--color-white);
+    background-color: #fff;
 }
 
 .main .con3 .inner {
     width: min(1402px, calc(100% - 40px));
     height: 451px;
+    background-color: #fff;
 }
 
 .main .con3 h2 {
@@ -638,10 +650,12 @@ button {
     width: 1401px;
     height: 412px;
     overflow: hidden;
+    background-color: #fff;
 }
 
 .main .con3 .ranking-wrapper {
     height: 100%;
+    background-color: #fff;
 }
 
 .main .con3 .ranking-list {
@@ -653,6 +667,7 @@ button {
     width: 100%;
     height: 412px;
     padding: 0 20px;
+    background-color: #fff;
 }
 
 .main .con3 .ranking-card {
@@ -760,6 +775,18 @@ button {
     white-space: nowrap;
 }
 
+.main .con3 .ranking-stats span:last-child {
+    cursor: pointer;
+}
+
+.main .con3 .ranking-stats span:last-child img {
+    transition: transform 0.2s ease;
+}
+
+.main .con3 .ranking-stats span:last-child[aria-pressed='true'] img {
+    transform: scale(1.08);
+}
+
 .main .con3 .ranking-stats img {
     display: block;
     width: 18px;
@@ -783,7 +810,7 @@ button {
 .main .con3 .main-tag {
     top: 3px;
     right: -43px;
-    z-index: 10;
+    z-index: 100;
 }
 
 #footer {
@@ -791,7 +818,7 @@ button {
     width: 100%;
     height: 551px;
     overflow: hidden;
-    background: #000;
+    background: #0a0a0a;
 }
 
 #footer .inner {
@@ -800,6 +827,22 @@ button {
     width: min(var(--content-width), calc(100% - 40px));
     height: 431px;
     margin: 0 auto;
+}
+
+#footer .footer-logo {
+    position: absolute;
+    top: 35px;
+    left: 0;
+    display: block;
+    width: 303.313px;
+    height: 68px;
+}
+
+#footer .footer-logo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 #footer .contact {
@@ -891,7 +934,6 @@ button {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    padding-top: 24px;
     gap: 20px;
 }
 
@@ -946,7 +988,7 @@ button {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    width: 60px;
+    width: 55px;
     height: 54px;
     color: var(--color-black);
     font-family: Inter, Arial, sans-serif;
@@ -1264,6 +1306,12 @@ button {
         position: static;
         max-width: none;
         font-size: 13px;
+    }
+
+    #footer .footer-logo {
+        position: static;
+        width: 214px;
+        height: 48px;
     }
 
     #footer .footer-nav {

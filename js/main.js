@@ -22,9 +22,10 @@ const initHeroSwiper = () => {
 
 const initHeroControl = () => {
     const control = document.querySelector('#hero .control');
+    const controlIcon = control?.querySelector('.control-icon');
     const hero = document.querySelector('.hero-swiper');
 
-    if (!control || !hero) return;
+    if (!control || !controlIcon || !hero) return;
 
     control.addEventListener('click', () => {
         const swiper = hero.swiper;
@@ -38,7 +39,11 @@ const initHeroControl = () => {
             }
         }
 
+        control.setAttribute('aria-pressed', String(isPaused));
         control.setAttribute('aria-label', isPaused ? '슬라이드 재생' : '슬라이드 일시정지');
+        controlIcon.src = isPaused
+            ? 'images/icon-play-small.svg'
+            : 'images/icon-hero-pause.svg';
     });
 };
 
@@ -97,6 +102,7 @@ const initPromotionSlider = () => {
     slider.addEventListener(
         'click',
         (event) => {
+            if (event.target.closest('.card-actions button')) return;
             if (isInActiveArea(event.clientX)) return;
 
             event.preventDefault();
@@ -139,6 +145,43 @@ const initPromotionSlider = () => {
     });
 };
 
+const initFavoriteButtons = () => {
+    const section = document.querySelector('.con1');
+
+    if (!section) return;
+
+    const initializeButtons = () => {
+        section.querySelectorAll('.card-actions button:last-child').forEach((button) => {
+            if (button.hasAttribute('aria-pressed')) return;
+
+            button.setAttribute('aria-pressed', 'false');
+            button.setAttribute('aria-label', '관심 상품에 추가');
+        });
+    };
+
+    initializeButtons();
+
+    section.addEventListener('click', (event) => {
+        const button = event.target.closest('.card-actions button:last-child');
+
+        if (!button || !section.contains(button)) return;
+
+        const icon = button.querySelector('img');
+
+        if (!icon) return;
+
+        const isSelected = button.getAttribute('aria-pressed') === 'true';
+        const willSelect = !isSelected;
+
+        button.setAttribute('aria-pressed', String(willSelect));
+        button.setAttribute(
+            'aria-label',
+            willSelect ? '관심 상품에서 제거' : '관심 상품에 추가',
+        );
+        icon.src = willSelect ? 'images/icon-heart-filled.svg' : 'images/icon-bookmark.svg';
+    });
+};
+
 const initLiveSlider = () => {
     const slider = document.querySelector('.live-swiper');
     const list = slider?.querySelector('.live-list');
@@ -164,6 +207,33 @@ const initLiveSlider = () => {
             enabled: true,
         },
     });
+};
+
+const initLiveCountdown = () => {
+    const timer = document.querySelector('.con2 .live-heading strong');
+
+    if (!timer) return;
+
+    const initialSeconds = 1 * 60 * 60 + 20 * 60 + 12;
+    const endTime = Date.now() + initialSeconds * 1000;
+
+    const render = () => {
+        const remainingSeconds = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+        const hours = Math.floor(remainingSeconds / 3600);
+        const minutes = Math.floor((remainingSeconds % 3600) / 60);
+        const seconds = remainingSeconds % 60;
+
+        timer.textContent = [hours, minutes, seconds]
+            .map((value) => String(value).padStart(2, '0'))
+            .join(' : ');
+
+        if (remainingSeconds === 0) {
+            window.clearInterval(intervalId);
+        }
+    };
+
+    render();
+    const intervalId = window.setInterval(render, 1000);
 };
 
 const initRankingSlider = () => {
@@ -201,6 +271,61 @@ const initRankingSlider = () => {
         a11y: {
             enabled: true,
         },
+    });
+};
+
+const initRankingFavoriteButtons = () => {
+    const section = document.querySelector('.con3');
+
+    if (!section) return;
+
+    const getButton = (target) => target.closest('.ranking-stats span:last-child');
+
+    const initializeButtons = () => {
+        section.querySelectorAll('.ranking-stats span:last-child').forEach((button) => {
+            button.setAttribute('role', 'button');
+            button.setAttribute('tabindex', '0');
+            button.setAttribute('aria-pressed', 'false');
+            button.setAttribute('aria-label', '관심 상품에 추가');
+        });
+    };
+
+    const toggleFavorite = (button) => {
+        const icon = button.querySelector('img');
+
+        if (!icon) return;
+
+        const willSelect = button.getAttribute('aria-pressed') !== 'true';
+
+        button.setAttribute('aria-pressed', String(willSelect));
+        button.setAttribute(
+            'aria-label',
+            willSelect ? '관심 상품에서 제거' : '관심 상품에 추가',
+        );
+        icon.src = willSelect ? 'images/icon-heart-filled.svg' : 'images/icon-heart.svg';
+    };
+
+    initializeButtons();
+
+    section.addEventListener('click', (event) => {
+        const button = getButton(event.target);
+
+        if (!button || !section.contains(button)) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFavorite(button);
+    });
+
+    section.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+
+        const button = getButton(event.target);
+
+        if (!button || !section.contains(button)) return;
+
+        event.preventDefault();
+        toggleFavorite(button);
     });
 };
 
@@ -249,7 +374,10 @@ const initTopButton = () => {
     initHeroSwiper();
     initHeroControl();
     initPromotionSlider();
+    initFavoriteButtons();
     initLiveSlider();
+    initLiveCountdown();
     initRankingSlider();
+    initRankingFavoriteButtons();
     initTopButton();
 })();
